@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import Toast from "../../components/shared/toast/Toast";
 import { useGetTokenMutation } from "../../features/auth/authApi";
 import { setUser } from "../../features/auth/authSlice";
@@ -9,6 +10,8 @@ function Login() {
   const clientSecret = import.meta.env.VITE_CLIENT_SECRET;
   const [getToken, { isLoading, isError, isSuccess }] = useGetTokenMutation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.users);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -25,13 +28,19 @@ function Login() {
       localStorage.removeItem("token");
       localStorage.removeItem("expireTokenIn");
       localStorage.removeItem("user");
+      dispatch(setUser({}));
     }
-    dispatch(setUser({}));
   };
 
   useEffect(() => {
     checkTokenExpiration();
   }, []);
+
+  useEffect(() => {
+    if (user?.email) {
+      navigate("/");
+    }
+  }, [user?.email]);
 
   return (
     <section className="bg-authBg bg-cover bg-center bg-no-repeat object-contain h-screen w-full flex items-center justify-center">

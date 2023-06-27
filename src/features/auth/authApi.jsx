@@ -13,6 +13,7 @@ export const authApi = createApi({
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
       }),
       async onQueryStarted({ data: userdata }, { queryFulfilled, dispatch }) {
+        console.log(userdata);
         try {
           const response = await queryFulfilled;
           const tokenData = response?.data;
