@@ -5,15 +5,23 @@ export default {
     extend: {},
     colors: {
       "white-30": "rgba(255,255,255,0.3)",
-      "dark-30": "rgba(0,0,0,0.3)",
+      "dark-30": "rgb(29 30 39 / 30%)",
+      "overlay-50": "rgb(24 25 31 / 50%)",
       "dark-50": "rgb(61 61 61 / 50%)",
       "pink-30": "rgba(191,136,255,0.3)",
-
+      darkHigh: "#141520",
       transparent: "transparent",
       white: "#fff",
+      black: "#0e0f18",
+
+      blue: "#326fff",
+      darkBlue: "#30313a",
+
+      blackHigh: "#2d2d30",
 
       fade: "#727272",
       fadeLight: "#aeaeae",
+      fadeLow: "#b3b3b3",
 
       primaryColor: "#635cff",
       successColor: "#4BB543 ",

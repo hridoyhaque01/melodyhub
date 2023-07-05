@@ -5,11 +5,11 @@ import Sidebar from "../components/sidebar/Sidebar";
 
 function Layout() {
   return (
-    <div className="bg-white h-screen w-full overflow-hidden">
+    <div className="bg-black text-white h-screen w-full overflow-hidden">
       <Topnav></Topnav>
-      <div className="flex gap-6 h-screen">
+      <div className="flex gap-6 h-[calc(100vh-72px)] sm:h-[calc(100vh-84px)] overflow-auto">
         <Sidebar></Sidebar>
-        <div className="w-full pr-10 h-[calc(100%-90px)] relative overflow-auto">
+        <div className="w-full pr-10 relative">
           <Outlet></Outlet>
         </div>
       </div>
