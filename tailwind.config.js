@@ -5,6 +5,7 @@ export default {
     extend: {},
     colors: {
       "white-30": "rgba(255,255,255,0.3)",
+      player: "rgb(21 21 32 / 40%)",
       "dark-30": "rgb(29 30 39 / 30%)",
       "overlay-50": "rgb(24 25 31 / 50%)",
       "dark-50": "rgb(61 61 61 / 50%)",
@@ -30,6 +31,7 @@ export default {
     },
     backgroundImage: {
       authBg: "url('./assets/images/musicbg.png')",
+      melody: "url('./assets/images/melody.png')",
     },
   },
   plugins: [],
