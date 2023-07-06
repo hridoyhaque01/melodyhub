@@ -1,4 +1,3 @@
-// useAudio.jsx
 import React, { useEffect, useRef, useState } from "react";
 
 const parseTimeRange = (ranges) =>
@@ -12,7 +11,7 @@ const parseTimeRange = (ranges) =>
         end: ranges.end(0),
       };
 
-export default ({ src, autoPlay = false, startPlaybackRate = 1 }) => {
+export default ({ srcList, autoPlay = false, startPlaybackRate = 1 }) => {
   const [state, setOrgState] = useState({
     buffered: {
       start: 0,
@@ -24,19 +23,31 @@ export default ({ src, autoPlay = false, startPlaybackRate = 1 }) => {
     waiting: false,
     playbackRate: 1,
     endedCallback: null,
+    currentSongIndex: 0,
   });
   const setState = (partState) => setOrgState({ ...state, ...partState });
   const ref = useRef(null);
 
   const element = React.createElement("audio", {
-    src,
+    src: srcList[state.currentSongIndex],
     controls: false,
     ref,
     onPlay: () => setState({ paused: false }),
     onPause: () => setState({ paused: true }),
     onWaiting: () => setState({ waiting: true }),
     onPlaying: () => setState({ waiting: false }),
-    onEnded: state.endedCallback,
+    onEnded: () => {
+      if (state.currentSongIndex === srcList.length - 1) {
+        // Last song ended, reset to the first song
+        setState({ currentSongIndex: 0 });
+      } else {
+        // Move to the next song
+        setState({ currentSongIndex: state.currentSongIndex + 1 });
+      }
+      if (state.endedCallback) {
+        state.endedCallback();
+      }
+    },
     onDurationChange: () => {
       const el = ref.current;
       if (!el) {
@@ -117,20 +128,48 @@ export default ({ src, autoPlay = false, startPlaybackRate = 1 }) => {
     setEndedCallback: (callback) => {
       setState({ endedCallback: callback });
     },
+    playPrevious: () => {
+      if (state.currentSongIndex === 0) {
+        // First song, wrap around to the last song
+        setState({ currentSongIndex: srcList.length - 1 });
+      } else {
+        // Move to the previous song
+        setState({ currentSongIndex: state.currentSongIndex - 1 });
+      }
+    },
+    playNext: () => {
+      if (state.currentSongIndex === srcList.length - 1) {
+        // Last song, wrap around to the first song
+        setState({ currentSongIndex: 0 });
+      } else {
+        // Move to the next song
+        setState({ currentSongIndex: state.currentSongIndex + 1 });
+      }
+    },
   };
+
+  useEffect(() => {
+    const el = ref.current;
+    controls.setPlaybackRate(startPlaybackRate);
+
+    if (autoPlay && el.paused) {
+      controls.play();
+    }
+  }, []);
 
   useEffect(() => {
     const el = ref.current;
     setState({
       paused: el.paused,
     });
+  }, [state.currentSongIndex]);
 
-    controls.setPlaybackRate(startPlaybackRate);
-
+  useEffect(() => {
+    const el = ref.current;
     if (autoPlay && el.paused) {
       controls.play();
     }
-  }, [src]);
+  }, [state.currentSongIndex]);
 
   return { element, state, controls };
 };

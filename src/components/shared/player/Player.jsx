@@ -1,9 +1,9 @@
 import React from "react";
 import useAudio from "../../../utils/useAudio";
+
 const Player = ({ songs }) => {
-  const singleSong = songs[0];
   const { element, state, controls } = useAudio({
-    src: singleSong,
+    srcList: songs,
   });
 
   return (
@@ -18,6 +18,8 @@ const Player = ({ songs }) => {
         {state.paused ? "play" : "pause"}
       </button>
       <button onClick={() => controls.seek(state.time + 10)}>+10 sec</button>
+      <button onClick={controls.playPrevious}>Previous</button>
+      <button onClick={controls.playNext}>Next</button>
       <br />
       {Math.round(state.time)} / {Math.round(state.duration)}
       <br />
