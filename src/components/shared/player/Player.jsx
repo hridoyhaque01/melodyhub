@@ -3,7 +3,7 @@ import { thumbnail } from "../../../utils/getImages";
 import useAudio from "../../../utils/useAudio";
 
 const Player = ({ songs }) => {
-  const { element, state, controls } = useAudio({
+  const { element, state, controls, otherStates } = useAudio({
     srcList: songs,
   });
 
@@ -197,7 +197,9 @@ const Player = ({ songs }) => {
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 100 100"
             id="shuffle"
-            className="w-6 h-6 fill-white"
+            className={`w-6 h-6 ${
+              otherStates?.isShuffle ? "fill-blue" : "fill-white"
+            }`}
           >
             <path d="m94.2 69.4-18-13c-.6-.4-1.4-.5-2.1-.2-.7.3-1.1 1-1.1 1.8v11H62L47.5 50 62 31h11v11c0 .8.4 1.4 1.1 1.8.3.1.6.2.9.2.4 0 .8-.1 1.2-.4l18-13c.5-.4.8-1 .8-1.6s-.3-1.2-.8-1.6l-18-13c-.6-.4-1.4-.5-2.1-.2-.7.3-1.1 1-1.1 1.8v11H61c-.6 0-1.2.3-1.6.8L45 46.7 30.6 27.8c-.4-.5-1-.8-1.6-.8H7c-1.1 0-2 .9-2 2s.9 2 2 2h21l14.5 19L28 69H7c-1.1 0-2 .9-2 2s.9 2 2 2h22c.6 0 1.2-.3 1.6-.8L45 53.3l14.4 18.9c.4.5 1 .8 1.6.8h12v11c0 .8.4 1.4 1.1 1.8.3.1.6.2.9.2.4 0 .8-.1 1.2-.4l18-13c.5-.4.8-1 .8-1.6s-.3-1.2-.8-1.6zM77 19.9 89.6 29 77 38.1V19.9zm0 60.2V61.9L89.6 71 77 80.1z"></path>
           </svg>
@@ -206,34 +208,37 @@ const Player = ({ songs }) => {
         <button
           type="button"
           className="flex items-center"
-          // onClick={controls?.toggleRepeat}
+          onClick={controls?.toggleRepeate}
         >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6 fill-white"
-          >
-            <g clipPath="url(#clip0_2308_1717)">
-              <path
-                d="M11.5 14V8H10.5L8.5 9V10H10V14H11.5ZM17.5 12H16.5V14.5V16.5H10H5.5V13L1.5 17L5.5 21V17.5H17.5V12ZM15.5 1V4.5H3.5V10H4.5V7.5V5.5H10.5H15.5V9L19.5 5L15.5 1Z"
-                fill="white"
-              />
-            </g>
-            <defs>
-              <clipPath id="clip0_2308_1717">
-                <rect width="24" height="24" fill="white" />
-              </clipPath>
-            </defs>
-          </svg>
-          {/* <svg
+          {otherStates?.isRepeat ? (
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 fill-white"
+            >
+              <g clipPath="url(#clip0_2308_1717)">
+                <path
+                  d="M11.5 14V8H10.5L8.5 9V10H10V14H11.5ZM17.5 12H16.5V14.5V16.5H10H5.5V13L1.5 17L5.5 21V17.5H17.5V12ZM15.5 1V4.5H3.5V10H4.5V7.5V5.5H10.5H15.5V9L19.5 5L15.5 1Z"
+                  fill="white"
+                />
+              </g>
+              <defs>
+                <clipPath id="clip0_2308_1717">
+                  <rect width="24" height="24" fill="white" />
+                </clipPath>
+              </defs>
+            </svg>
+          ) : (
+            <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 64 64"
               id="repeat"
               className="h-6 w-6 fill-white"
             >
               <path d="M55 37.586l-5.293-5.293-1.414 1.561 7 7.146h1.414l7-7.146-1.414-1.488L57 37.586V15H8v2h47zM7 26.414V49h49v-2H9V26.414l5.293 5.293 1.414-1.561-7-7.146H7.293l-7 7.146 1.414 1.488z"></path>
-            </svg> */}
+            </svg>
+          )}
         </button>
         {/* volumn */}
         <div className="flex items-center gap-4 volumn">
