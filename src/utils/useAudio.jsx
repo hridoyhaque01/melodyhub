@@ -4,9 +4,8 @@ const useAudio = ({ srcList }) => {
   const [audio] = useState(new Audio());
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isShuffle, setIsShuffle] = useState(false);
   const [isRepeat, setIsRepeat] = useState(false);
-  const [test, setTest] = useState(0);
+  const [playMode, setPlayMode] = useState("normal");
 
   const [state, setState] = useState({
     duration: 0,
@@ -15,8 +14,8 @@ const useAudio = ({ srcList }) => {
   });
 
   const otherStates = {
-    isShuffle,
     isRepeat,
+    playMode,
   };
 
   const controls = {
@@ -39,7 +38,7 @@ const useAudio = ({ srcList }) => {
     playNext: () => {
       const nextIndex = currentSongIndex + 1;
       let index = 0;
-      if (isShuffle && srcList?.length > 0) {
+      if (playMode === "shuffle" && srcList?.length > 0) {
         index = Math.floor(Math.random() * (srcList?.length - 1));
         setIsLoaded(false);
         setCurrentSongIndex(index);
@@ -60,7 +59,7 @@ const useAudio = ({ srcList }) => {
     playPrevious: () => {
       const previousIndex = currentSongIndex - 1;
       let index = 0;
-      if (isShuffle && srcList?.length > 0) {
+      if (playMode === "shuffle" && srcList?.length > 0) {
         index = Math.floor(Math.random() * (srcList?.length - 1));
         setIsLoaded(false);
         setCurrentSongIndex(index);
@@ -77,12 +76,12 @@ const useAudio = ({ srcList }) => {
     setVolume: (volume) => {
       audio.volume = volume;
     },
-    toggleShuffle: () => {
-      setIsShuffle(!isShuffle);
-    },
     toggleRepeate: () => {
       setIsRepeat(!isRepeat);
       console;
+    },
+    togglePlayMode: (mode) => {
+      setPlayMode(mode);
     },
   };
 
@@ -96,7 +95,7 @@ const useAudio = ({ srcList }) => {
     });
 
     const handleAudioEnded = () => {
-      if (isRepeat) {
+      if (playMode === "repeat") {
         controls.playCurrent();
       } else {
         controls.playNext();

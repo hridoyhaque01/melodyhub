@@ -8,7 +8,7 @@ const Player = ({ songs }) => {
   });
 
   const [volume, setVolume] = useState("50");
-
+  const [isShowVolumn, setIsShowVolumn] = useState(false);
   const handleVolumeChange = (e) => {
     const newVolume = e.target.value;
     setVolume(newVolume.toString());
@@ -35,8 +35,52 @@ const Player = ({ songs }) => {
           <p className="text-xs text-fadeLight">Lone</p>
         </div>
       </div>
-      <div className="flex flex-col items-center gap-3 col-span-2">
-        <div className="flex items-center gap-10">
+      <div className="flex flex-col items-center gap-1 col-span-2">
+        <div className="flex items-center gap-10 relative">
+          {/* play mode  */}
+          <button type="button" className="flex items-center ">
+            {otherStates?.playMode === "normal" ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 64 64"
+                id="repeat"
+                className="h-6 w-6 fill-white"
+                onClick={() => controls?.togglePlayMode("repeat")}
+              >
+                <path d="M55 37.586l-5.293-5.293-1.414 1.561 7 7.146h1.414l7-7.146-1.414-1.488L57 37.586V15H8v2h47zM7 26.414V49h49v-2H9V26.414l5.293 5.293 1.414-1.561-7-7.146H7.293l-7 7.146 1.414 1.488z"></path>
+              </svg>
+            ) : otherStates?.playMode === "repeat" ? (
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 fill-white"
+                onClick={() => controls?.togglePlayMode("shuffle")}
+              >
+                <g clipPath="url(#clip0_2308_1717)">
+                  <path
+                    d="M11.5 14V8H10.5L8.5 9V10H10V14H11.5ZM17.5 12H16.5V14.5V16.5H10H5.5V13L1.5 17L5.5 21V17.5H17.5V12ZM15.5 1V4.5H3.5V10H4.5V7.5V5.5H10.5H15.5V9L19.5 5L15.5 1Z"
+                    fill="white"
+                  />
+                </g>
+                <defs>
+                  <clipPath id="clip0_2308_1717">
+                    <rect width="24" height="24" fill="white" />
+                  </clipPath>
+                </defs>
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 100 100"
+                id="shuffle"
+                onClick={() => controls?.togglePlayMode("normal")}
+                className="h-6 w-6 fill-white"
+              >
+                <path d="m94.2 69.4-18-13c-.6-.4-1.4-.5-2.1-.2-.7.3-1.1 1-1.1 1.8v11H62L47.5 50 62 31h11v11c0 .8.4 1.4 1.1 1.8.3.1.6.2.9.2.4 0 .8-.1 1.2-.4l18-13c.5-.4.8-1 .8-1.6s-.3-1.2-.8-1.6l-18-13c-.6-.4-1.4-.5-2.1-.2-.7.3-1.1 1-1.1 1.8v11H61c-.6 0-1.2.3-1.6.8L45 46.7 30.6 27.8c-.4-.5-1-.8-1.6-.8H7c-1.1 0-2 .9-2 2s.9 2 2 2h21l14.5 19L28 69H7c-1.1 0-2 .9-2 2s.9 2 2 2h22c.6 0 1.2-.3 1.6-.8L45 53.3l14.4 18.9c.4.5 1 .8 1.6.8h12v11c0 .8.4 1.4 1.1 1.8.3.1.6.2.9.2.4 0 .8-.1 1.2-.4l18-13c.5-.4.8-1 .8-1.6s-.3-1.2-.8-1.6zM77 19.9 89.6 29 77 38.1V19.9zm0 60.2V61.9L89.6 71 77 80.1z"></path>
+              </svg>
+            )}
+          </button>
           {/* decrease 10 second button */}
           <button
             type="button"
@@ -174,95 +218,73 @@ const Player = ({ songs }) => {
               />
             </svg>
           </button>
+          {/* volumn */}
+          <div className="flex items-center gap-4  ">
+            <button
+              className="flex items-center"
+              onClick={() => setIsShowVolumn((prev) => !prev)}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 100 100"
+                id="volume"
+                className="w-6 h-6 fill-white"
+              >
+                <path d="M90 50.00000000000001c0 8.6-2.5 16.9-7.3 24.1-.4.6-1 .9-1.7.9-.4 0-.8-.1-1.1-.3-.9-.6-1.2-1.8-.6-2.8C83.7 65.4 86 57.8 86 50c0-7.8-2.3-15.3-6.6-21.9-.6-.9-.4-2.2.6-2.8.9-.6 2.2-.3 2.8.6C87.5 33.1 90 41.4 90 50zm-10.2 0c0 5.8-1.5 11.6-4.4 16.8-.4.6-1 1-1.7 1-.3 0-.7-.1-1-.3-1-.5-1.3-1.8-.8-2.7 2.6-4.5 3.9-9.6 3.9-14.8 0-5.2-1.3-10.3-3.9-14.8-.5-1-.2-2.2.8-2.7s2.2-.2 2.7.7c2.9 5.2 4.4 11 4.4 16.8zm-10.2 0c0 3.2-.6 6.2-1.8 9.1-.3.8-1.1 1.2-1.8 1.2-.2 0-.5 0-.8-.1-1-.4-1.5-1.6-1.1-2.6 1-2.4 1.5-4.9 1.5-7.6s-.5-5.2-1.5-7.6c-.4-1 .1-2.2 1.1-2.6 1-.4 2.2.1 2.6 1.1 1.2 2.9 1.8 6 1.8 9.1zM58 16v68c0 .8-.5 1.5-1.2 1.8-.3.1-.5.2-.8.2-.5 0-1-.2-1.4-.6L36.2 67H12c-1.1 0-2-.9-2-2V35c0-1.1.9-2 2-2h24.2l18.4-18.4c.6-.6 1.4-.7 2.2-.4.7.3 1.2 1 1.2 1.8zM35 37H14v26h21V37zm19-16.2l-15 15v28.3l15 15V20.8z"></path>
+                <path
+                  fill="#00F"
+                  d="M524-650v1684h-1784V-650H524m8-8h-1800v1700H532V-658z"
+                ></path>
+              </svg>
+            </button>
+          </div>
+
+          <div
+            className={`flex flex-col gap-4 absolute right-0 -top-24 bg-dark-60 w-60 py-3 px-4 rounded-md volumn origin-bottom-right duration-300  ${
+              isShowVolumn ? "scale-100 " : "scale-0"
+            }`}
+          >
+            <p className="text-sm">Adjust Volumn</p>
+            <div className="flex items-center gap-2 ">
+              <button className="flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 100 100"
+                  id="volume"
+                  className="w-6 h-6 fill-white"
+                >
+                  <path d="M90 50.00000000000001c0 8.6-2.5 16.9-7.3 24.1-.4.6-1 .9-1.7.9-.4 0-.8-.1-1.1-.3-.9-.6-1.2-1.8-.6-2.8C83.7 65.4 86 57.8 86 50c0-7.8-2.3-15.3-6.6-21.9-.6-.9-.4-2.2.6-2.8.9-.6 2.2-.3 2.8.6C87.5 33.1 90 41.4 90 50zm-10.2 0c0 5.8-1.5 11.6-4.4 16.8-.4.6-1 1-1.7 1-.3 0-.7-.1-1-.3-1-.5-1.3-1.8-.8-2.7 2.6-4.5 3.9-9.6 3.9-14.8 0-5.2-1.3-10.3-3.9-14.8-.5-1-.2-2.2.8-2.7s2.2-.2 2.7.7c2.9 5.2 4.4 11 4.4 16.8zm-10.2 0c0 3.2-.6 6.2-1.8 9.1-.3.8-1.1 1.2-1.8 1.2-.2 0-.5 0-.8-.1-1-.4-1.5-1.6-1.1-2.6 1-2.4 1.5-4.9 1.5-7.6s-.5-5.2-1.5-7.6c-.4-1 .1-2.2 1.1-2.6 1-.4 2.2.1 2.6 1.1 1.2 2.9 1.8 6 1.8 9.1zM58 16v68c0 .8-.5 1.5-1.2 1.8-.3.1-.5.2-.8.2-.5 0-1-.2-1.4-.6L36.2 67H12c-1.1 0-2-.9-2-2V35c0-1.1.9-2 2-2h24.2l18.4-18.4c.6-.6 1.4-.7 2.2-.4.7.3 1.2 1 1.2 1.8zM35 37H14v26h21V37zm19-16.2l-15 15v28.3l15 15V20.8z"></path>
+                  <path
+                    fill="#00F"
+                    d="M524-650v1684h-1784V-650H524m8-8h-1800v1700H532V-658z"
+                  ></path>
+                </svg>
+              </button>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={volume.toString()}
+                onChange={handleVolumeChange}
+              />
+            </div>
+          </div>
         </div>
         {/* track  */}
         <div className="track shrink-0 w-full">
-          <input
-            type="range"
-            min={0}
-            max={100}
-            value={(state.time / state.duration) * 100 || 0}
-            onChange={handleTrackChange}
-          />
-        </div>
-      </div>
-      <div className="flex items-center gap-6 justify-end">
-        {/* suffle play  */}
-        <button
-          type="button"
-          className="flex items-center"
-          onClick={controls?.toggleShuffle}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 100 100"
-            id="shuffle"
-            className={`w-6 h-6 ${
-              otherStates?.isShuffle ? "fill-blue" : "fill-white"
-            }`}
-          >
-            <path d="m94.2 69.4-18-13c-.6-.4-1.4-.5-2.1-.2-.7.3-1.1 1-1.1 1.8v11H62L47.5 50 62 31h11v11c0 .8.4 1.4 1.1 1.8.3.1.6.2.9.2.4 0 .8-.1 1.2-.4l18-13c.5-.4.8-1 .8-1.6s-.3-1.2-.8-1.6l-18-13c-.6-.4-1.4-.5-2.1-.2-.7.3-1.1 1-1.1 1.8v11H61c-.6 0-1.2.3-1.6.8L45 46.7 30.6 27.8c-.4-.5-1-.8-1.6-.8H7c-1.1 0-2 .9-2 2s.9 2 2 2h21l14.5 19L28 69H7c-1.1 0-2 .9-2 2s.9 2 2 2h22c.6 0 1.2-.3 1.6-.8L45 53.3l14.4 18.9c.4.5 1 .8 1.6.8h12v11c0 .8.4 1.4 1.1 1.8.3.1.6.2.9.2.4 0 .8-.1 1.2-.4l18-13c.5-.4.8-1 .8-1.6s-.3-1.2-.8-1.6zM77 19.9 89.6 29 77 38.1V19.9zm0 60.2V61.9L89.6 71 77 80.1z"></path>
-          </svg>
-        </button>
-        {/* suffle repeat play  */}
-        <button
-          type="button"
-          className="flex items-center"
-          onClick={controls?.toggleRepeate}
-        >
-          {otherStates?.isRepeat ? (
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 fill-white"
-            >
-              <g clipPath="url(#clip0_2308_1717)">
-                <path
-                  d="M11.5 14V8H10.5L8.5 9V10H10V14H11.5ZM17.5 12H16.5V14.5V16.5H10H5.5V13L1.5 17L5.5 21V17.5H17.5V12ZM15.5 1V4.5H3.5V10H4.5V7.5V5.5H10.5H15.5V9L19.5 5L15.5 1Z"
-                  fill="white"
-                />
-              </g>
-              <defs>
-                <clipPath id="clip0_2308_1717">
-                  <rect width="24" height="24" fill="white" />
-                </clipPath>
-              </defs>
-            </svg>
-          ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 64 64"
-              id="repeat"
-              className="h-6 w-6 fill-white"
-            >
-              <path d="M55 37.586l-5.293-5.293-1.414 1.561 7 7.146h1.414l7-7.146-1.414-1.488L57 37.586V15H8v2h47zM7 26.414V49h49v-2H9V26.414l5.293 5.293 1.414-1.561-7-7.146H7.293l-7 7.146 1.414 1.488z"></path>
-            </svg>
-          )}
-        </button>
-        {/* volumn */}
-        <div className="flex items-center gap-4 volumn">
-          <div className="flex items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 100 100"
-              id="volume"
-              className="w-6 h-6 fill-white"
-            >
-              <path d="M90 50.00000000000001c0 8.6-2.5 16.9-7.3 24.1-.4.6-1 .9-1.7.9-.4 0-.8-.1-1.1-.3-.9-.6-1.2-1.8-.6-2.8C83.7 65.4 86 57.8 86 50c0-7.8-2.3-15.3-6.6-21.9-.6-.9-.4-2.2.6-2.8.9-.6 2.2-.3 2.8.6C87.5 33.1 90 41.4 90 50zm-10.2 0c0 5.8-1.5 11.6-4.4 16.8-.4.6-1 1-1.7 1-.3 0-.7-.1-1-.3-1-.5-1.3-1.8-.8-2.7 2.6-4.5 3.9-9.6 3.9-14.8 0-5.2-1.3-10.3-3.9-14.8-.5-1-.2-2.2.8-2.7s2.2-.2 2.7.7c2.9 5.2 4.4 11 4.4 16.8zm-10.2 0c0 3.2-.6 6.2-1.8 9.1-.3.8-1.1 1.2-1.8 1.2-.2 0-.5 0-.8-.1-1-.4-1.5-1.6-1.1-2.6 1-2.4 1.5-4.9 1.5-7.6s-.5-5.2-1.5-7.6c-.4-1 .1-2.2 1.1-2.6 1-.4 2.2.1 2.6 1.1 1.2 2.9 1.8 6 1.8 9.1zM58 16v68c0 .8-.5 1.5-1.2 1.8-.3.1-.5.2-.8.2-.5 0-1-.2-1.4-.6L36.2 67H12c-1.1 0-2-.9-2-2V35c0-1.1.9-2 2-2h24.2l18.4-18.4c.6-.6 1.4-.7 2.2-.4.7.3 1.2 1 1.2 1.8zM35 37H14v26h21V37zm19-16.2l-15 15v28.3l15 15V20.8z"></path>
-              <path
-                fill="#00F"
-                d="M524-650v1684h-1784V-650H524m8-8h-1800v1700H532V-658z"
-              ></path>
-            </svg>
+          <div className="flex justify-between text-[10px] translate-y-3">
+            <span>{(state.time / 60).toFixed(2)}</span>
+            <span>{(state?.duration / 60).toFixed(2)}</span>
           </div>
-          <input
-            type="range"
-            min={0}
-            max={100}
-            value={volume.toString()}
-            onChange={handleVolumeChange}
-          />
+          <div>
+            <input
+              type="range"
+              min={0}
+              max={100}
+              value={(state.time / state.duration) * 100 || 0}
+              onChange={handleTrackChange}
+            />
+          </div>
         </div>
       </div>
     </div>

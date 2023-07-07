@@ -9,6 +9,7 @@ export default {
       "dark-30": "rgb(29 30 39 / 30%)",
       "overlay-50": "rgb(24 25 31 / 50%)",
       "dark-50": "rgb(61 61 61 / 50%)",
+      "dark-60": "rgb(0 0 0 / 80%)",
       "pink-30": "rgba(191,136,255,0.3)",
       darkHigh: "#141520",
       transparent: "transparent",
