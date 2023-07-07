@@ -1,13 +1,28 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import audioFile from "../assets/test.mp3";
-import audio2File from "../assets/test2.mp3";
 import Player from "../components/shared/player/Player";
 import Topnav from "../components/shared/topnav/Topnav";
 import RightSideContent from "../components/sidebar/RightSideContent";
 import Sidebar from "../components/sidebar/Sidebar";
 
+import {
+  audioFive,
+  audioFour,
+  audioOne,
+  audioSix,
+  audioThree,
+  audioTwo,
+} from "../utils/getImages";
+
 function Layout() {
+  const songs = [
+    audioOne,
+    audioFive,
+    audioSix,
+    audioFour,
+    audioThree,
+    audioTwo,
+  ];
   return (
     <div className="bg-black text-white h-screen w-full overflow-hidden">
       <Topnav></Topnav>
@@ -18,8 +33,10 @@ function Layout() {
         </div>
         <RightSideContent></RightSideContent>
       </div>
-      <div className="fixed bottom-0 left-0 right-0 h-20 bg-player backdrop-blur-md z-[60]">
-        <Player songs={[audioFile, audio2File]}></Player>
+      <div className="fixed bottom-0 left-0 right-0 h-28 bg-player backdrop-blur-md z-[60] flex items-center">
+        <div className="w-10/12 mx-auto">
+          <Player songs={songs}></Player>
+        </div>
       </div>
     </div>
   );

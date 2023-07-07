@@ -1,175 +1,128 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
-const parseTimeRange = (ranges) =>
-  ranges.length < 1
-    ? {
-        start: 0,
-        end: 0,
-      }
-    : {
-        start: ranges.start(0),
-        end: ranges.end(0),
-      };
-
-export default ({ srcList, autoPlay = false, startPlaybackRate = 1 }) => {
-  const [state, setOrgState] = useState({
-    buffered: {
-      start: 0,
-      end: 0,
-    },
-    time: 0,
+const useAudio = ({ srcList }) => {
+  const [audio] = useState(new Audio());
+  const [state, setState] = useState({
     duration: 0,
+    time: 0,
     paused: true,
-    waiting: false,
-    playbackRate: 1,
-    endedCallback: null,
-    currentSongIndex: 0,
   });
-  const setState = (partState) => setOrgState({ ...state, ...partState });
-  const ref = useRef(null);
-
-  const element = React.createElement("audio", {
-    src: srcList[state.currentSongIndex],
-    controls: false,
-    ref,
-    onPlay: () => setState({ paused: false }),
-    onPause: () => setState({ paused: true }),
-    onWaiting: () => setState({ waiting: true }),
-    onPlaying: () => setState({ waiting: false }),
-    onEnded: () => {
-      if (state.currentSongIndex === srcList.length - 1) {
-        // Last song ended, reset to the first song
-        setState({ currentSongIndex: 0 });
-      } else {
-        // Move to the next song
-        setState({ currentSongIndex: state.currentSongIndex + 1 });
-      }
-      if (state.endedCallback) {
-        state.endedCallback();
-      }
-    },
-    onDurationChange: () => {
-      const el = ref.current;
-      if (!el) {
-        return;
-      }
-      const { duration, buffered } = el;
-      setState({
-        duration,
-        buffered: parseTimeRange(buffered),
-      });
-    },
-    onTimeUpdate: () => {
-      const el = ref.current;
-      if (!el) {
-        return;
-      }
-      setState({ time: el.currentTime });
-    },
-    onProgress: () => {
-      const el = ref.current;
-      if (!el) {
-        return;
-      }
-      setState({ buffered: parseTimeRange(el.buffered) });
-    },
-  });
-
-  let lockPlay = false;
+  const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isShuffle, setIsShuffle] = useState(false);
+  const [shuffledSongs, setShuffledSongs] = useState([]);
 
   const controls = {
     play: () => {
-      const el = ref.current;
-      if (!el) {
-        return undefined;
+      if (isLoaded) {
+        audio
+          .play()
+          .then(() => {
+            setState((prevState) => ({ ...prevState, paused: false }));
+          })
+          .catch((error) => {
+            console.error("Error playing audio:", error);
+          });
       }
-
-      if (!lockPlay) {
-        const promise = el.play();
-        const isPromise = typeof promise === "object";
-
-        if (isPromise) {
-          lockPlay = true;
-          const resetLock = () => {
-            lockPlay = false;
-          };
-          promise.then(resetLock, resetLock);
-        }
-
-        return promise;
-      }
-      return undefined;
     },
     pause: () => {
-      const el = ref.current;
-      if (el && !lockPlay) {
-        return el.pause();
+      audio.pause();
+      setState((prevState) => ({ ...prevState, paused: true }));
+    },
+    playNext: () => {
+      const nextIndex = currentSongIndex + 1;
+      if (isShuffle && shuffledSongs.length > 0) {
+        const currentIndex = shuffledSongs.findIndex(
+          (song) => song === audio.src
+        );
+        if (currentIndex === shuffledSongs.length - 1) {
+          controls.pause();
+        } else {
+          const nextSong = shuffledSongs[currentIndex + 1];
+          audio.src = nextSong;
+          setIsLoaded(false);
+          setCurrentSongIndex(srcList.indexOf(nextSong));
+        }
+      } else if (nextIndex < srcList.length) {
+        audio.src = srcList[nextIndex];
+        setIsLoaded(false);
+        setCurrentSongIndex(nextIndex);
+      }
+    },
+    playPrevious: () => {
+      const previousIndex = currentSongIndex - 1;
+      if (isShuffle && shuffledSongs.length > 0) {
+        const currentIndex = shuffledSongs.findIndex(
+          (song) => song === audio.src
+        );
+        if (currentIndex === 0) {
+          controls.pause();
+        } else {
+          const previousSong = shuffledSongs[currentIndex - 1];
+          audio.src = previousSong;
+          setIsLoaded(false);
+          setCurrentSongIndex(srcList.indexOf(previousSong));
+        }
+      } else if (previousIndex >= 0) {
+        audio.src = srcList[previousIndex];
+        setIsLoaded(false);
+        setCurrentSongIndex(previousIndex);
       }
     },
     seek: (time) => {
-      const el = ref.current;
-      if (!el || state.duration === undefined) {
-        return;
-      }
-      time = Math.min(state.duration, Math.max(0, time));
-      el.currentTime = time || 0;
+      audio.currentTime = time;
+      setState((prevState) => ({ ...prevState, time }));
     },
-    setPlaybackRate: (rate) => {
-      const el = ref.current;
-      if (!el || state.duration === undefined) {
-        return;
-      }
-
-      setState({
-        playbackRate: rate,
-      });
-      el.playbackRate = rate;
+    setVolume: (volume) => {
+      audio.volume = volume;
     },
-    setEndedCallback: (callback) => {
-      setState({ endedCallback: callback });
-    },
-    playPrevious: () => {
-      if (state.currentSongIndex === 0) {
-        // First song, wrap around to the last song
-        setState({ currentSongIndex: srcList.length - 1 });
+    toggleShuffle: () => {
+      setIsShuffle(!isShuffle);
+      if (!isShuffle) {
+        setShuffledSongs([...srcList].sort(() => Math.random() - 0.5));
       } else {
-        // Move to the previous song
-        setState({ currentSongIndex: state.currentSongIndex - 1 });
-      }
-    },
-    playNext: () => {
-      if (state.currentSongIndex === srcList.length - 1) {
-        // Last song, wrap around to the first song
-        setState({ currentSongIndex: 0 });
-      } else {
-        // Move to the next song
-        setState({ currentSongIndex: state.currentSongIndex + 1 });
+        setShuffledSongs([]);
       }
     },
   };
 
   useEffect(() => {
-    const el = ref.current;
-    controls.setPlaybackRate(startPlaybackRate);
-
-    if (autoPlay && el.paused) {
-      controls.play();
-    }
-  }, []);
-
-  useEffect(() => {
-    const el = ref.current;
-    setState({
-      paused: el.paused,
+    audio.addEventListener("timeupdate", () => {
+      setState((prevState) => ({ ...prevState, time: audio.currentTime }));
     });
-  }, [state.currentSongIndex]);
+
+    audio.addEventListener("loadedmetadata", () => {
+      setState((prevState) => ({ ...prevState, duration: audio.duration }));
+    });
+
+    audio.addEventListener("ended", () => {
+      controls.playNext();
+    });
+
+    audio.addEventListener("canplaythrough", () => {
+      setIsLoaded(true);
+      controls.play();
+    });
+
+    return () => {
+      audio.removeEventListener("timeupdate", () => {});
+      audio.removeEventListener("loadedmetadata", () => {});
+      audio.removeEventListener("ended", () => {});
+      audio.removeEventListener("canplaythrough", () => {});
+    };
+  }, [audio, controls]);
 
   useEffect(() => {
-    const el = ref.current;
-    if (autoPlay && el.paused) {
-      controls.play();
-    }
-  }, [state.currentSongIndex]);
+    audio.src = srcList[currentSongIndex];
+    audio.load();
 
-  return { element, state, controls };
+    return () => {
+      audio.src = "";
+      audio.load();
+    };
+  }, [audio, srcList, currentSongIndex]);
+
+  return { element: null, state, controls };
 };
+
+export default useAudio;

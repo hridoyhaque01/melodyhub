@@ -26,3 +26,59 @@ body {
 ::-webkit-scrollbar {
   width: 0;
 }
+
+.track input {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  cursor: pointer;
+  outline: none;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.track input::-webkit-slider-runnable-track {
+  height: 2px;
+  background: #7a7a7a;
+  border-radius: 16px;
+}
+
+.track input::-moz-range-track {
+  height: 2px;
+  background: #ccc;
+  border-radius: 16px;
+}
+
+.track input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 15px;
+  width: 15px;
+  background-color: #fff;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: -407px 0 0 400px #fff;
+}
+
+.track input::-moz-range-thumb {
+  height: 15px;
+  width: 15px;
+  background-color: #fff;
+  border-radius: 50%;
+  border: 1px solid #ffffff;
+  box-shadow: -407px 0 0 400px #ffffff;
+}
+
+.volumn input[type="range"] {
+  height: 3px;
+  background: #ccc;
+  border-radius: 5px;
+  background-repeat: no-repeat;
+}
+
+.volumn input[type="range"]::-webkit-slider-runnable-track {
+  -webkit-appearance: none;
+  box-shadow: none;
+  border: none;
+  background: transparent;
+}

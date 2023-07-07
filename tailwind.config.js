@@ -12,13 +12,15 @@ export default {
       "pink-30": "rgba(191,136,255,0.3)",
       darkHigh: "#141520",
       transparent: "transparent",
-      white: "#fff",
       black: "#0e0f18",
 
       blue: "#326fff",
       darkBlue: "#30313a",
 
       blackHigh: "#2d2d30",
+
+      white: "#fff",
+      whiteLow: "#cdcdcd",
 
       fade: "#727272",
       fadeLight: "#aeaeae",
