@@ -6,8 +6,9 @@ const initialState = {
   isLoading: false,
   isError: false,
   error: "",
-  user: "",
+  user: undefined,
   isRegisterSuccess: false,
+  accessToken: undefined,
 };
 
 if (userdata) {
@@ -19,7 +20,8 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      state.user = action.payload;
+      state.accessToken = action.payload.accessToken;
+      state.user = action.payload.user;
     },
   },
 });

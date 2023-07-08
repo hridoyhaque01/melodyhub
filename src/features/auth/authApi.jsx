@@ -21,7 +21,7 @@ export const authApi = createApi({
           localStorage.setItem("token", JSON.stringify(tokenData));
           localStorage.setItem("expireTokenIn", expirationTime);
           localStorage.setItem("user", JSON.stringify(userdata));
-          dispatch(setUser(userdata));
+          dispatch(setUser({ user: userdata, accessToken: tokenData?.token }));
         } catch (error) {
           console.log(error);
         }

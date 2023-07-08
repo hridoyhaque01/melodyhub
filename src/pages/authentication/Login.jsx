@@ -18,7 +18,6 @@ function Login() {
     const email = event.target.email.value;
     const password = event.target.password.value;
     const data = { email, password };
-    console.log("hello");
     getToken({ clientId, clientSecret, data });
   };
 
